@@ -2,7 +2,7 @@
 
 Takara adalah aplikasi web pendamping untuk **AI voice learning assistant**. Frontend ini dibangun dengan **Next.js App Router** dan menyediakan alur autentikasi, pemilihan persona, percakapan suara real-time, evaluasi sesi, serta laporan pembelajaran.
 
-Repository ini merupakan pasangan dari [Takara Backend](https://github.com/ItsBayyyy/cogni-be), layanan FastAPI yang menangani autentikasi, orkestrasi agen AI, transkripsi, sintesis suara, dan penyimpanan data.
+Repository ini merupakan pasangan dari [Takara Backend](https://github.com/ItsBayyyy/takara-be), layanan FastAPI yang menangani autentikasi, orkestrasi agen AI, transkripsi, sintesis suara, dan penyimpanan data.
 
 ## Fitur Utama
 
@@ -48,14 +48,14 @@ Browser
 Next.js BFF (Vercel)
    │ Authorization: Bearer <server-side cookie value>
    ▼
-FastAPI API (Railway)
+FastAPI API (Render)
    ├── PostgreSQL
    ├── Redis
    ├── Groq LLM / Whisper
    └── Microsoft Edge TTS
 ```
 
-Browser tidak berkomunikasi langsung dengan Railway dan tidak pernah menerima JWT dalam JavaScript. Route handler Next.js meneruskan request ke backend, menyaring response header, menghapus token dari response login, dan menyimpannya dalam cookie `HttpOnly`.
+Browser tidak berkomunikasi langsung dengan Render dan tidak pernah menerima JWT dalam JavaScript. Route handler Next.js meneruskan request ke backend, menyaring response header, menghapus token dari response login, dan menyimpannya dalam cookie `HttpOnly`.
 
 ## Security Controls
 
@@ -91,8 +91,8 @@ Kontrol frontend bukan pengganti otorisasi server. Semua resource privat tetap h
 1. Clone repository:
 
    ```bash
-   git clone https://github.com/ItsBayyyy/cogni-fe.git
-   cd cogni-fe
+   git clone https://github.com/ItsBayyyy/takara-fe.git
+   cd takara-fe
    ```
 
 2. Aktifkan pnpm dan install dependency:
@@ -138,7 +138,7 @@ Aplikasi tersedia di `http://localhost:3000`.
 
 Jangan mengubah kedua variable tersebut menjadi `NEXT_PUBLIC_*`. API key, JWT secret, database URL, dan kredensial provider tidak boleh ditempatkan pada environment frontend.
 
-Tombol demo juri dikendalikan oleh `DEMO_LOGIN_ENABLED=true` pada environment **backend Railway**, bukan Vercel.
+Tombol demo juri dikendalikan oleh `DEMO_LOGIN_ENABLED=true` pada environment **backend Render**, bukan Vercel.
 
 ## Quality Gates
 
@@ -154,17 +154,18 @@ Build TypeScript dikonfigurasi fail-closed: error TypeScript akan menggagalkan p
 
 ## Deployment ke Vercel
 
-1. Hubungkan repository `ItsBayyyy/cogni-fe` ke Vercel.
+1. Hubungkan repository `ItsBayyyy/takara-fe` ke Vercel.
 2. Gunakan framework preset **Next.js**.
 3. Tambahkan environment variable production:
 
    ```env
-   TAKARA_API_BASE_URL=https://<backend-railway>/api/v1
+   TAKARA_API_BASE_URL=https://takara-api.onrender.com/api/v1
    SITE_URL=https://<frontend-vercel>
    ```
 
-4. Pastikan backend Railway mengizinkan origin frontend melalui `CORS_ORIGINS`.
+4. Pastikan backend Render mengizinkan origin frontend melalui `CORS_ORIGINS`.
 5. Deploy frontend setelah backend dapat diakses melalui HTTPS.
+6. Catatan: stream SSE obrolan yang panjang dapat terpotong pada batas 60 detik Vercel Hobby; batas 300 detik tersedia pada paket Pro.
 
 Tidak ada API key atau credential pengguna yang diperlukan di Vercel.
 
